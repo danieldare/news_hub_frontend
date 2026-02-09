@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/components/ui/Button';
+
 interface ErrorDisplayProps {
   message?: string;
   onRetry?: () => void;
@@ -29,13 +31,9 @@ export function ErrorDisplay({
       <h3 className="mb-1.5 text-base font-semibold text-gray-900">Error loading articles</h3>
       <p className="mb-5 max-w-xs text-sm leading-relaxed text-gray-500">{message}</p>
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
-        >
+        <Button type="button" onClick={onRetry}>
           Try again
-        </button>
+        </Button>
       )}
     </div>
   );

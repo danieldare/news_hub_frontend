@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { usePreferences } from '@/hooks/usePreferences';
 import { PROVIDER_LABELS } from '@/utils/constants';
+import { Button } from '@/components/ui/Button';
 import type { Category, ProviderID } from '@/lib/types';
 
 const ALL_PROVIDERS: { id: ProviderID; label: string; description: string }[] = [
@@ -63,11 +64,11 @@ export function PreferencesPanel() {
     <div className="space-y-8">
       {/* Save confirmation */}
       {showSaved && (
-        <div className="animate-fade-in flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        <div className="animate-fade-in flex items-center gap-3 rounded-full border border-green-100 bg-green-50/80 py-2 pl-4 pr-4">
+          <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
-          Preferences saved automatically
+          <p className="flex-1 text-sm text-green-700">Preferences saved automatically</p>
         </div>
       )}
 
@@ -190,14 +191,9 @@ export function PreferencesPanel() {
             placeholder="Add an author name..."
             className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          <button
-            type="button"
-            onClick={handleAddAuthor}
-            disabled={!authorInput.trim()}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
-          >
+          <Button type="button" size="sm" onClick={handleAddAuthor} disabled={!authorInput.trim()}>
             Add
-          </button>
+          </Button>
         </div>
       </section>
 
