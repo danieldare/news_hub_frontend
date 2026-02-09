@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import Image from 'next/image';
 import type { Article } from '@/lib/types';
 import { relativeTime } from '@/utils/dates';
@@ -9,7 +10,7 @@ interface ArticleCardProps {
   article: Article;
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
+export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardProps) {
   const providerColor = PROVIDER_COLORS[article.provider] ?? 'bg-gray-100 text-gray-800';
   const providerLabel = PROVIDER_LABELS[article.provider] ?? article.provider;
 
@@ -92,4 +93,4 @@ export function ArticleCard({ article }: ArticleCardProps) {
       </div>
     </a>
   );
-}
+});
