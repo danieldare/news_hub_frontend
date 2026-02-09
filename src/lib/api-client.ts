@@ -63,7 +63,6 @@ export async function apiGet<T>(url: string): Promise<T> {
     } catch (error) {
       lastError = error as Error;
 
-      // Don't retry rate limits or timeouts on last attempt
       if (error instanceof ApiError && error.code === 'RATE_LIMIT') {
         throw error;
       }

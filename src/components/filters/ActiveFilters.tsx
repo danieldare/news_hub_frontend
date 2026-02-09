@@ -38,10 +38,10 @@ export function ActiveFilters({ params, onRemove, onClearAll }: ActiveFiltersPro
           <button
             type="button"
             onClick={() => onRemove(pill.key)}
-            className="ml-0.5 text-blue-400 hover:text-blue-600"
+            className="-mr-1 ml-0.5 rounded-full p-1 text-blue-400 transition-colors hover:bg-blue-100 hover:text-blue-600 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600"
             aria-label={`Remove ${pill.label} filter`}
           >
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

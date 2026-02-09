@@ -19,9 +19,8 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+      className="group flex flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      {/* Thumbnail */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {article.imageUrl ? (
           <>
@@ -32,7 +31,6 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
-            {/* Gradient overlay for readability on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </>
         ) : (
@@ -43,7 +41,6 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
           </div>
         )}
 
-        {/* Provider badge - floating on image */}
         <div className="absolute left-3 top-3">
           <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold shadow-sm backdrop-blur-sm ${providerColor}`}>
             {providerLabel}
@@ -51,9 +48,7 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex flex-1 flex-col p-4">
-        {/* Meta row */}
         <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
           {article.source.name !== providerLabel && (
             <span className="font-medium text-gray-600">{article.source.name}</span>
@@ -69,19 +64,16 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
           </span>
         </div>
 
-        {/* Title */}
         <h3 className="mb-2 line-clamp-2 text-[15px] font-semibold leading-snug text-gray-900 transition-colors group-hover:text-blue-600">
           {article.title}
         </h3>
 
-        {/* Description */}
         {article.description && (
           <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-gray-500">
             {article.description}
           </p>
         )}
 
-        {/* Author */}
         {article.author && (
           <div className="mt-auto flex items-center gap-1.5 pt-1">
             <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500">

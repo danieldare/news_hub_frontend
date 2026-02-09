@@ -104,6 +104,18 @@ body {
   animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Hide scrollbar for category pills */
 .no-scrollbar {
   -ms-overflow-style: none;

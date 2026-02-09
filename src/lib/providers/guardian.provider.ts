@@ -8,8 +8,7 @@ import type {
   ProviderError,
 } from '@/lib/types';
 import { ProviderFeature } from '@/lib/types';
-
-// ─── Guardian Response Types ───────────────────────────────────────────────
+import { hashId } from '@/utils/hash';
 
 interface GuardianTag {
   id: string;
@@ -50,13 +49,10 @@ interface GuardianResponse {
   };
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
 function extractAuthor(article: GuardianArticle): string | null {
-  // Try byline field first
   if (article.fields?.byline) return article.fields.byline;
 
-  // Fall back to contributor tags
+  // Fall back to contributor tags if no byline
   const contributor = article.tags?.find((t) => t.type === 'contributor');
   if (contributor) {
     const parts = [contributor.firstName, contributor.lastName].filter(Boolean);
@@ -66,19 +62,9 @@ function extractAuthor(article: GuardianArticle): string | null {
   return null;
 }
 
-function generateId(guardianId: string): string {
-  let hash = 0;
-  for (let i = 0; i < guardianId.length; i++) {
-    const char = guardianId.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0;
-  }
-  return `guardian-${Math.abs(hash).toString(36)}`;
-}
-
 function transformArticle(raw: GuardianArticle): Article {
   return {
-    id: generateId(raw.id),
+    id: hashId(raw.id, 'guardian'),
     title: raw.fields?.headline ?? raw.webTitle,
     description: raw.fields?.trailText ?? '',
     content: raw.fields?.body ?? null,
@@ -95,8 +81,6 @@ function transformArticle(raw: GuardianArticle): Article {
     provider: 'guardian',
   };
 }
-
-// ─── Provider ──────────────────────────────────────────────────────────────
 
 export class GuardianProvider implements NewsProvider {
   readonly id = 'guardian' as const;

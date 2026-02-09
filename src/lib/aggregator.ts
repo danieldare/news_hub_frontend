@@ -9,8 +9,6 @@ import type {
 } from '@/lib/types';
 import { deduplicateArticles } from '@/utils/dedup';
 
-// ─── Ranking ───────────────────────────────────────────────────────────────
-
 function computeRankScore(
   article: Article,
   params: SearchParams,
@@ -23,7 +21,6 @@ function computeRankScore(
   if (!hasPrefs) return 0;
 
   let score = 0;
-
   if (params.preferredSources?.includes(article.source.id)) score += 30;
   if (article.category && params.preferredCategories?.includes(article.category)) score += 20;
   if (article.author && params.preferredAuthors?.includes(article.author)) score += 15;
@@ -41,18 +38,13 @@ function sortArticles(articles: Article[], params: SearchParams): Article[] {
     const scoreA = computeRankScore(a, params);
     const scoreB = computeRankScore(b, params);
 
-    // 1) rankScore descending
     if (scoreB !== scoreA) return scoreB - scoreA;
-    // 2) publishedAt descending
     if (b.publishedAt.getTime() !== a.publishedAt.getTime()) {
       return b.publishedAt.getTime() - a.publishedAt.getTime();
     }
-    // 3) id ascending (tie-breaker)
     return a.id.localeCompare(b.id);
   });
 }
-
-// ─── Aggregator ────────────────────────────────────────────────────────────
 
 export class ArticleAggregator {
   constructor(private readonly providers: NewsProvider[]) {}
@@ -61,21 +53,19 @@ export class ArticleAggregator {
     const page = params.page ?? 1;
     const pageSize = Math.min(params.pageSize ?? 20, 50);
 
-    // Filter to enabled providers if specified
     const activeProviders = params.providers
       ? this.providers.filter((p) => params.providers!.includes(p.id))
       : this.providers;
 
-    // Parallel fetch from all active providers
     const startTimes = new Map<string, number>();
     const results = await Promise.allSettled(
       activeProviders.map((provider) => {
         startTimes.set(provider.id, Date.now());
+        // Overfetch so we have enough after dedup + ranking to fill a page
         return provider.search({ ...params, page: 1, pageSize: pageSize * 3 });
       }),
     );
 
-    // Collect articles, statuses, and errors
     const allArticles: Article[] = [];
     const providerStatuses: ProviderStatusInfo[] = [];
     const errors: ProviderError[] = [];
@@ -105,11 +95,9 @@ export class ArticleAggregator {
       }
     });
 
-    // Dedup, rank, sort
     const deduped = deduplicateArticles(allArticles);
     const sorted = sortArticles(deduped, params);
 
-    // Paginate
     const start = (page - 1) * pageSize;
     const paged = sorted.slice(start, start + pageSize);
     const total = sorted.length;
