@@ -1,21 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Header } from '@/components/layout/Header';
+import { QueryProvider } from '@/components/QueryProvider';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "NewsHub - Modern News Aggregator",
+  title: 'NewsHub - Modern News Aggregator',
   description:
-    "A modern news aggregator that unifies content from multiple news sources with search, filtering, and personalization.",
+    'A modern news aggregator that unifies content from multiple news sources with search, filtering, and personalization.',
 };
 
 export default function RootLayout({
@@ -28,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <QueryProvider>
+          <Header />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );
