@@ -16,7 +16,7 @@ const sizes = {
 } as const;
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600';
 
 export function buttonStyles({
   variant = 'primary',

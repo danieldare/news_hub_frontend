@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface SearchBarProps {
@@ -8,7 +8,7 @@ interface SearchBarProps {
   onChange: (value: string) => void;
 }
 
-export function SearchBar({ value, onChange }: SearchBarProps) {
+export const SearchBar = memo(function SearchBar({ value, onChange }: SearchBarProps) {
   const [input, setInput] = useState(value);
   const debouncedInput = useDebounce(input, 300);
 
@@ -73,4 +73,4 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
       )}
     </form>
   );
-}
+});

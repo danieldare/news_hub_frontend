@@ -1,7 +1,11 @@
-'use client';
-
+import type { Metadata } from 'next';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { PreferencesPanel } from '@/components/preferences/PreferencesPanel';
+
+export const metadata: Metadata = {
+  title: 'Preferences - NewsHub',
+  description: 'Customize your news feed by selecting preferred sources, categories, and authors.',
+};
 
 export default function PreferencesPage() {
   return (

@@ -8,8 +8,7 @@ import type {
   ProviderError,
 } from '@/lib/types';
 import { ProviderFeature } from '@/lib/types';
-
-// ─── NewsAPI Response Types ────────────────────────────────────────────────
+import { hashId } from '@/utils/hash';
 
 interface NewsApiArticle {
   source: { id: string | null; name: string };
@@ -28,21 +27,15 @@ interface NewsApiResponse {
   articles: NewsApiArticle[];
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
-function generateId(url: string): string {
-  let hash = 0;
-  for (let i = 0; i < url.length; i++) {
-    const char = url.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0;
-  }
-  return `newsapi-${Math.abs(hash).toString(36)}`;
+interface NewsApiSource {
+  id: string;
+  name: string;
+  category: string;
 }
 
 function transformArticle(raw: NewsApiArticle): Article {
   return {
-    id: generateId(raw.url),
+    id: hashId(raw.url, 'newsapi'),
     title: raw.title ?? '',
     description: raw.description ?? '',
     content: raw.content,
@@ -59,8 +52,6 @@ function transformArticle(raw: NewsApiArticle): Article {
     provider: 'newsapi',
   };
 }
-
-// ─── Provider ──────────────────────────────────────────────────────────────
 
 export class NewsApiProvider implements NewsProvider {
   readonly id = 'newsapi' as const;
@@ -152,20 +143,33 @@ export class NewsApiProvider implements NewsProvider {
   }
 
   async getCategories(): Promise<Category[]> {
-    // NewsAPI doesn't have a categories endpoint; return static list
-    const categories = [
-      'business',
-      'entertainment',
-      'general',
-      'health',
-      'science',
-      'sports',
-      'technology',
-    ];
-    return categories.map((c) => ({
-      id: c,
-      name: c.charAt(0).toUpperCase() + c.slice(1),
-      provider: 'newsapi' as const,
-    }));
+    // Pull unique categories from the /sources endpoint
+    try {
+      const url = `${this.baseUrl}/top-headlines/sources?apiKey=${this.apiKey}&language=en`;
+      const data = await apiGet<{ sources: NewsApiSource[] }>(url);
+      const seen = new Set<string>();
+      const categories: Category[] = [];
+
+      for (const source of data.sources ?? []) {
+        const cat = source.category;
+        if (cat && !seen.has(cat)) {
+          seen.add(cat);
+          categories.push({
+            id: cat,
+            name: cat.charAt(0).toUpperCase() + cat.slice(1),
+            provider: 'newsapi',
+          });
+        }
+      }
+
+      return categories.length > 0 ? categories : this.fallbackCategories();
+    } catch {
+      return this.fallbackCategories();
+    }
+  }
+
+  private fallbackCategories(): Category[] {
+    return ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology']
+      .map((c) => ({ id: c, name: c.charAt(0).toUpperCase() + c.slice(1), provider: 'newsapi' as const }));
   }
 }

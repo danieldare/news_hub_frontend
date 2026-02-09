@@ -1,142 +1,99 @@
 # NewsHub
 
-A modern news aggregator web application that unifies content from multiple news sources into a single, searchable, and personalized interface.
+A news aggregator that pulls articles from NewsAPI, The Guardian, and the New York Times into a single feed with search, filtering, and personalization.
 
 Built with **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS 4**, and **Docker**.
 
-## Architecture
+## How It Works
 
-```
-┌───────────────────────────────────────────────────────┐
-│         CLIENT COMPONENTS ('use client')              │
-│  SearchBar │ Filters │ ArticleGrid │ Preferences      │
-└─────────────────────────┬─────────────────────────────┘
-                          │  fetch('/api/articles')
-┌─────────────────────────┼─────────────────────────────┐
-│         NEXT.JS ROUTE HANDLERS (Server)               │
-│  /api/articles │ /api/categories │ /api/sources        │
-│  (API keys secure, no CORS, server-side caching)      │
-└─────────────────────────┬─────────────────────────────┘
-                          │
-┌─────────────────────────┼─────────────────────────────┐
-│           AGGREGATION SERVICE (Server)                │
-│  Parallel fetch │ Dedup │ Rank │ Paginate              │
-└───────┬─────────┬─────────┬───────────────────────────┘
-        │         │         │
-  ┌─────┴───┐ ┌───┴─────┐ ┌┴────────┐
-  │ NewsAPI  │ │Guardian │ │  NYT    │   Provider Adapters
-  └─────────┘ └─────────┘ └─────────┘   (Strategy Pattern)
-```
+Client components fetch from internal Next.js Route Handlers (`/api/articles`, `/api/categories`), which fan out to all three news APIs in parallel server-side. This keeps API keys off the client, avoids CORS, and lets us aggregate, deduplicate, and rank results before sending them back.
 
-**Key design decisions:**
+Each news API is wrapped in a provider class that implements a shared `NewsProvider` interface (Strategy Pattern), so adding a new source means adding one file without touching existing code.
 
-- **Route Handlers as API proxy** — All three API keys stay server-side. Client components call same-origin `/api/articles`, eliminating CORS issues and key exposure.
-- **Strategy Pattern for providers** — Each API is encapsulated behind a `NewsProvider` interface. New sources can be added without modifying existing code (Open/Closed Principle).
-- **URL state as source of truth** — All search/filter state lives in URL params via `useSearchParams`, making every view shareable and bookmarkable.
-- **Zustand for preferences** — Lightweight global store with `localStorage` persistence. No backend needed for user accounts in v1.
+Search and filter state lives in URL params (`useSearchParams`), so every view is shareable and bookmarkable. User preferences (preferred sources, categories, authors) are stored client-side with Zustand + localStorage.
 
 ## Tech Stack
 
-| Layer | Technology | Rationale |
-|-------|-----------|-----------|
-| Framework | Next.js 16 (App Router) | Turbopack, Route Handlers, optimized navigation |
-| Language | TypeScript 5 | Type safety across server/client boundary |
-| Styling | Tailwind CSS 4 | CSS-first config, zero JS config files |
-| Data Fetching | TanStack Query v5 | Client caching, dedup, retry, loading states |
-| State | Zustand 5 + persist | Lightweight preferences with localStorage |
-| Testing | Vitest + RTL + MSW | Fast tests, component testing, API mocking |
-| Containerization | Docker (multi-stage) | Standalone Next.js output, minimal image |
+- **Next.js 16** — App Router, Turbopack, Route Handlers
+- **TypeScript 5** — strict mode
+- **Tailwind CSS 4** — CSS-first config (`@theme inline`)
+- **TanStack Query v5** — client caching, dedup, retry
+- **Zustand 5** — preferences with `persist` middleware
+- **Vitest + React Testing Library + MSW** — unit and component tests
+- **Docker** — multi-stage build with standalone output
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 22+
-- npm 10+
-- API keys from:
-  - [NewsAPI.org](https://newsapi.org/register)
-  - [The Guardian](https://open-platform.theguardian.com/access/)
-  - [New York Times](https://developer.nytimes.com/accounts/create)
+- API keys from [NewsAPI](https://newsapi.org/register), [The Guardian](https://open-platform.theguardian.com/access/), and [NYT](https://developer.nytimes.com/accounts/create)
 
 ### Local Development
 
 ```bash
-# Clone and install
-git clone https://github.com/yourusername/newshub.git
-cd newshub
 npm install
-
-# Configure API keys
 cp .env.example .env.local
-# Edit .env.local and add your API keys
-
-# Start dev server
+# Add your API keys to .env.local
 npm run dev
-# Open http://localhost:3000
 ```
 
 ### Docker
 
 ```bash
-# Configure API keys
 cp .env.example .env.local
-# Edit .env.local and add your API keys
-
-# Build and run
+# Add your API keys to .env.local
 docker-compose up --build
-# Open http://localhost:3000
+# App runs on http://localhost:3000
 ```
 
-### Available Scripts
+### Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server (Turbopack) |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run tests (Vitest) |
-| `npm run test:watch` | Run tests in watch mode |
+```bash
+npm run dev          # Dev server (Turbopack)
+npm run build        # Production build
+npm test             # Run tests
+npm run test:watch   # Tests in watch mode
+```
 
 ## Project Structure
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── api/               # Route Handlers (server-side API proxy)
-│   │   ├── articles/      # Aggregated article search
-│   │   ├── categories/    # Merged categories from all providers
-│   │   └── sources/       # Provider metadata
-│   ├── search/            # Search results page
-│   └── preferences/       # User preferences page
+├── app/
+│   ├── api/                # Route Handlers — server-side API proxy
+│   │   ├── articles/       # Aggregated search across all providers
+│   │   ├── categories/     # Merged categories
+│   │   └── sources/        # Provider metadata
+│   └── preferences/        # User preferences page
 ├── lib/
-│   ├── providers/         # NewsAPI, Guardian, NYT adapters
-│   ├── aggregator.ts      # Parallel fetch, dedup, rank, paginate
-│   ├── api-client.ts      # Shared HTTP client with retry/timeout
-│   └── types.ts           # Core TypeScript interfaces
+│   ├── providers/          # NewsAPI, Guardian, NYT adapters
+│   ├── aggregator.ts       # Parallel fetch, dedup, rank, paginate
+│   ├── api-client.ts       # HTTP client with retry + timeout
+│   └── types.ts            # Core interfaces
 ├── components/
-│   ├── articles/          # ArticleCard, ArticleGrid, skeletons
-│   ├── filters/           # SearchBar, date/category/source/author
-│   ├── preferences/       # PreferencesPanel
-│   └── layout/            # Header, Sidebar, MobileNav
-├── hooks/                 # useArticles, useDebounce, useSearchParams
-├── stores/                # Zustand preference store
-└── utils/                 # Dedup, date formatting, constants
+│   ├── articles/           # ArticleCard, HeroArticleCard, skeletons
+│   ├── filters/            # SearchBar, CategoryPills, date/source/author filters
+│   ├── preferences/        # PreferencesPanel
+│   ├── layout/             # Header, MobileNav
+│   └── ui/                 # Reusable Button component
+├── hooks/                  # useArticles, useCategories, usePreferences, useSearchParams
+├── stores/                 # Zustand preferences store
+└── utils/                  # Dedup, hashing, date formatting, constants
 ```
 
 ## Features
 
-- **Multi-source aggregation** — Articles from NewsAPI, The Guardian, and NYT in a unified feed
-- **Search & filtering** — Keyword search, date range, category, source, and author filters
-- **Personalized feed** — Preferred sources, categories, and authors ranked higher
-- **URL-driven state** — Shareable/bookmarkable search URLs
-- **Graceful degradation** — Partial results when individual providers fail
-- **Mobile responsive** — 1/2/3-column grid with bottom-sheet filters on mobile
-- **Server-side security** — API keys never exposed to client
+- **Multi-source aggregation** — parallel fetch from 3 APIs with deduplication
+- **Search & filtering** — keyword, date range, category, source, author
+- **Personalized feed** — preferred sources/categories/authors ranked higher
+- **Graceful degradation** — partial results when some providers fail, with status banner
+- **Mobile responsive** — bottom-sheet filters, responsive grid
+- **Accessible** — skip link, focus-visible, aria dialogs, reduced motion support
 
-## API Response Contract
+## API Response Shape
 
-`GET /api/articles` returns:
+`GET /api/articles` returns 200 with `partial: true` when some providers fail, or 502 when all fail:
 
 ```json
 {
@@ -155,20 +112,8 @@ src/
 }
 ```
 
-- HTTP 200 with `partial: true` when at least one provider succeeds
-- HTTP 502 only when all providers fail
+## Given More Time
 
-## Design Principles
-
-- **SOLID** — Strategy pattern for providers, interface segregation via `ProviderFeature`
-- **DRY** — Shared API client, unified `Article` type, reusable filter components
-- **KISS** — URL params for filter state, localStorage for preferences, no unnecessary abstractions
-
-## What I Would Do Differently With More Time
-
-- Circuit breaker per provider to avoid repeated timeouts
-- Redis/Upstash shared cache for reduced API consumption
 - Cursor-based pagination across providers
-- Playwright end-to-end tests
-- Accessibility audit (WCAG 2.1 AA)
-- Server-Sent Events for breaking news updates
+- E2E tests with Playwright
+- SSE or WebSocket for live breaking news

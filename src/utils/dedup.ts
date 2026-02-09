@@ -1,4 +1,4 @@
-import type { Article, ProviderID } from '@/lib/types';
+import type { Article, Category, ProviderID } from '@/lib/types';
 
 const TRACKER_PARAMS = new Set([
   'utm_source',
@@ -83,4 +83,14 @@ export function deduplicateArticles(articles: Article[]): Article[] {
   }
 
   return Array.from(seen.values());
+}
+
+/**
+ * Deduplicate categories by name (case-insensitive).
+ * Keeps the first occurrence of each category name.
+ */
+export function deduplicateCategories(categories: Category[]): Category[] {
+  return Array.from(
+    new Map(categories.map((c) => [c.name.toLowerCase(), c])).values(),
+  );
 }

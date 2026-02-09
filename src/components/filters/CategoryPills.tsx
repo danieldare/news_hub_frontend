@@ -1,32 +1,16 @@
 'use client';
 
-import { useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import type { Category } from '@/lib/types';
+import { useRef, memo } from 'react';
+import { useCategories } from '@/hooks/useCategories';
 
 interface CategoryPillsProps {
   selected: string;
   onChange: (category: string) => void;
 }
 
-async function fetchCategories(): Promise<Category[]> {
-  const res = await fetch('/api/categories');
-  if (!res.ok) return [];
-  const json = await res.json();
-  return json.data ?? [];
-}
-
-export function CategoryPills({ selected, onChange }: CategoryPillsProps) {
+export const CategoryPills = memo(function CategoryPills({ selected, onChange }: CategoryPillsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const uniqueCategories = Array.from(
-    new Map(categories.map((c) => [c.name.toLowerCase(), c])).values(),
-  );
+  const uniqueCategories = useCategories();
 
   if (uniqueCategories.length === 0) return null;
 
@@ -36,11 +20,10 @@ export function CategoryPills({ selected, onChange }: CategoryPillsProps) {
         ref={scrollRef}
         className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1"
       >
-        {/* All button */}
         <button
           type="button"
           onClick={() => onChange('')}
-          className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+          className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
             !selected
               ? 'bg-blue-600 text-white shadow-sm'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -54,8 +37,8 @@ export function CategoryPills({ selected, onChange }: CategoryPillsProps) {
             <button
               key={category.id}
               type="button"
-              onClick={() => onChange(isSelected ? '' : category.name)}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+              onClick={() => onChange(isSelected ? '' : category.name.toLowerCase())}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
                 isSelected
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -68,4 +51,4 @@ export function CategoryPills({ selected, onChange }: CategoryPillsProps) {
       </div>
     </div>
   );
-}
+});

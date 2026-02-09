@@ -30,7 +30,7 @@ async function fetchArticles(params: SearchParams): Promise<PaginatedResult<Arti
 
   const data = await response.json();
 
-  // Parse date strings back to Date objects
+  // Dates arrive as strings from the API, convert them back
   data.data = data.data.map((article: Article) => ({
     ...article,
     publishedAt: new Date(article.publishedAt),

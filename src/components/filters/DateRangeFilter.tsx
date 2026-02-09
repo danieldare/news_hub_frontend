@@ -23,7 +23,6 @@ export function DateRangeFilter({ from, to, onChange }: DateRangeFilterProps) {
     <div className="space-y-3">
       <h3 className="text-sm font-medium text-gray-900">Date Range</h3>
 
-      {/* Quick presets */}
       <div className="flex flex-wrap gap-2">
         {PRESETS.map((preset) => (
           <button
@@ -46,7 +45,6 @@ export function DateRangeFilter({ from, to, onChange }: DateRangeFilterProps) {
         )}
       </div>
 
-      {/* Date inputs */}
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label htmlFor="date-from" className="mb-1 block text-xs text-gray-500">

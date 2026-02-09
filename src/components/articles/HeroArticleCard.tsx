@@ -19,9 +19,8 @@ export const HeroArticleCard = memo(function HeroArticleCard({ article }: HeroAr
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-gray-900 shadow-lg transition-all duration-300 hover:shadow-2xl sm:flex-row"
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-gray-900 shadow-lg transition-all duration-300 hover:shadow-2xl sm:flex-row focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      {/* Image */}
       <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-auto sm:w-3/5">
         {article.imageUrl ? (
           <Image
@@ -39,14 +38,11 @@ export const HeroArticleCard = memo(function HeroArticleCard({ article }: HeroAr
             </svg>
           </div>
         )}
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-gray-900/80 sm:block hidden" />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/30 to-transparent sm:hidden" />
       </div>
 
-      {/* Content */}
       <div className="relative flex flex-1 flex-col justify-center p-6 sm:p-8">
-        {/* Provider + Meta */}
         <div className="mb-3 flex items-center gap-3">
           <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${providerColor}`}>
             {providerLabel}
@@ -59,19 +55,16 @@ export const HeroArticleCard = memo(function HeroArticleCard({ article }: HeroAr
           </span>
         </div>
 
-        {/* Title */}
         <h2 className="mb-3 text-xl font-bold leading-tight text-white transition-colors group-hover:text-blue-300 sm:text-2xl lg:text-3xl">
           {article.title}
         </h2>
 
-        {/* Description */}
         {article.description && (
           <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-300 sm:text-base">
             {article.description}
           </p>
         )}
 
-        {/* Author + Source */}
         <div className="flex items-center gap-3">
           {article.author && (
             <div className="flex items-center gap-2">
@@ -89,7 +82,6 @@ export const HeroArticleCard = memo(function HeroArticleCard({ article }: HeroAr
           )}
         </div>
 
-        {/* Read indicator */}
         <div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-blue-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           Read full story
           <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

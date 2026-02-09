@@ -1,24 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { usePreferences } from '@/hooks/usePreferences';
+import { useCategories } from '@/hooks/useCategories';
 import { PROVIDER_LABELS } from '@/utils/constants';
 import { Button } from '@/components/ui/Button';
-import type { Category, ProviderID } from '@/lib/types';
+import { Tooltip } from '@/components/ui/Tooltip';
+import type { ProviderID } from '@/lib/types';
 
 const ALL_PROVIDERS: { id: ProviderID; label: string; description: string }[] = [
   { id: 'newsapi', label: 'NewsAPI', description: 'Aggregated from 80,000+ sources' },
   { id: 'guardian', label: 'The Guardian', description: 'Award-winning journalism from the UK' },
   { id: 'nyt', label: 'New York Times', description: 'All the news that\'s fit to print' },
 ];
-
-async function fetchCategories(): Promise<Category[]> {
-  const res = await fetch('/api/categories');
-  if (!res.ok) return [];
-  const json = await res.json();
-  return json.data ?? [];
-}
 
 export function PreferencesPanel() {
   const {
@@ -35,16 +29,7 @@ export function PreferencesPanel() {
 
   const [authorInput, setAuthorInput] = useState('');
   const [showSaved, setShowSaved] = useState(false);
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const uniqueCategories = Array.from(
-    new Map(categories.map((c) => [c.name.toLowerCase(), c])).values(),
-  );
+  const uniqueCategories = useCategories();
 
   const handleAddAuthor = () => {
     const trimmed = authorInput.trim();
@@ -62,7 +47,6 @@ export function PreferencesPanel() {
 
   return (
     <div className="space-y-8">
-      {/* Save confirmation */}
       {showSaved && (
         <div className="animate-fade-in flex items-center gap-3 rounded-full border border-green-100 bg-green-50/80 py-2 pl-4 pr-4">
           <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -72,30 +56,33 @@ export function PreferencesPanel() {
         </div>
       )}
 
-      {/* Enabled Providers */}
       <section>
         <h3 className="mb-1 text-sm font-semibold text-gray-900">News Providers</h3>
         <p className="mb-4 text-xs text-gray-500">Choose which providers to fetch articles from.</p>
         <div className="space-y-3">
           {ALL_PROVIDERS.map((provider) => {
             const isEnabled = enabledProviders.includes(provider.id);
-            return (
+            const isLastEnabled = isEnabled && enabledProviders.length === 1;
+
+            const card = (
               <label
-                key={provider.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all ${
-                  isEnabled
-                    ? 'border-blue-200 bg-blue-50/50'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                className={`flex items-start gap-3 rounded-xl border p-4 transition-all ${
+                  isLastEnabled
+                    ? 'cursor-not-allowed border-blue-200 bg-blue-50/50 opacity-50'
+                    : isEnabled
+                      ? 'cursor-pointer border-blue-200 bg-blue-50/50'
+                      : 'cursor-pointer border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={isEnabled}
+                  disabled={isLastEnabled}
                   onChange={() => {
                     toggleProvider(provider.id);
                     flashSaved();
                   }}
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
                 />
                 <div>
                   <span className={`text-sm font-medium ${isEnabled ? 'text-gray-900' : 'text-gray-500'}`}>
@@ -105,11 +92,18 @@ export function PreferencesPanel() {
                 </div>
               </label>
             );
+
+            return isLastEnabled ? (
+              <Tooltip key={provider.id} content="At least one provider must be selected">
+                {card}
+              </Tooltip>
+            ) : (
+              <div key={provider.id}>{card}</div>
+            );
           })}
         </div>
       </section>
 
-      {/* Preferred Categories */}
       <section>
         <h3 className="mb-1 text-sm font-semibold text-gray-900">Preferred Categories</h3>
         <p className="mb-4 text-xs text-gray-500">Articles from these categories will be ranked higher.</p>
@@ -146,12 +140,10 @@ export function PreferencesPanel() {
         )}
       </section>
 
-      {/* Preferred Authors */}
       <section>
         <h3 className="mb-1 text-sm font-semibold text-gray-900">Favorite Authors</h3>
         <p className="mb-4 text-xs text-gray-500">Articles by these authors will appear first.</p>
 
-        {/* Author chips */}
         {preferredAuthors.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
             {preferredAuthors.map((author) => (
@@ -176,7 +168,6 @@ export function PreferencesPanel() {
           </div>
         )}
 
-        {/* Add author input */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -197,7 +188,6 @@ export function PreferencesPanel() {
         </div>
       </section>
 
-      {/* Preferences Summary */}
       {(preferredSources.length > 0 || preferredCategories.length > 0 || preferredAuthors.length > 0) && (
         <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
           <h3 className="mb-2 text-sm font-semibold text-gray-900">Current Preferences</h3>
@@ -222,7 +212,6 @@ export function PreferencesPanel() {
         </section>
       )}
 
-      {/* Reset */}
       <div className="border-t border-gray-200 pt-6">
         <button
           type="button"

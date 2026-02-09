@@ -1,8 +1,4 @@
-// ─── Provider Identification ───────────────────────────────────────────────
-
 export type ProviderID = 'newsapi' | 'guardian' | 'nyt';
-
-// ─── Provider Features ─────────────────────────────────────────────────────
 
 export enum ProviderFeature {
   KEYWORD_SEARCH = 'keyword_search',
@@ -13,15 +9,11 @@ export enum ProviderFeature {
   PAGINATION = 'pagination',
 }
 
-// ─── Source Info ────────────────────────────────────────────────────────────
-
 export interface SourceInfo {
   id: string;
   name: string;
   provider: ProviderID;
 }
-
-// ─── Article ───────────────────────────────────────────────────────────────
 
 export interface Article {
   id: string;
@@ -37,15 +29,11 @@ export interface Article {
   provider: ProviderID;
 }
 
-// ─── Category ──────────────────────────────────────────────────────────────
-
 export interface Category {
   id: string;
   name: string;
   provider: ProviderID;
 }
-
-// ─── Search Params ─────────────────────────────────────────────────────────
 
 export interface SearchParams {
   q?: string;
@@ -61,8 +49,6 @@ export interface SearchParams {
   preferredCategories?: string[];
   preferredAuthors?: string[];
 }
-
-// ─── Paginated Result ──────────────────────────────────────────────────────
 
 export type ProviderStatus = 'ok' | 'degraded' | 'down';
 
@@ -91,8 +77,6 @@ export interface PaginatedResult<T> {
   errors: ProviderError[];
 }
 
-// ─── News Provider Interface ───────────────────────────────────────────────
-
 export interface NewsProvider {
   readonly id: ProviderID;
   readonly name: string;
@@ -102,8 +86,6 @@ export interface NewsProvider {
   getCategories(): Promise<Category[]>;
   supports(feature: ProviderFeature): boolean;
 }
-
-// ─── User Preferences ──────────────────────────────────────────────────────
 
 export interface UserPreferences {
   preferredSources: string[];

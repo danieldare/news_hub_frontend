@@ -8,8 +8,7 @@ import type {
   ProviderError,
 } from '@/lib/types';
 import { ProviderFeature } from '@/lib/types';
-
-// ─── NYT Response Types ────────────────────────────────────────────────────
+import { hashId } from '@/utils/hash';
 
 interface NytMultimedia {
   url: string;
@@ -46,7 +45,15 @@ interface NytResponse {
   };
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
+interface NytSection {
+  section: string;
+  display_name: string;
+}
+
+interface NytSectionListResponse {
+  status: string;
+  results: NytSection[];
+}
 
 function extractImageUrl(multimedia: NytMultimedia[]): string | null {
   if (!multimedia || multimedia.length === 0) return null;
@@ -66,19 +73,9 @@ function extractAuthor(byline?: { original: string | null }): string | null {
   return byline.original.replace(/^By\s+/i, '');
 }
 
-function generateId(nytId: string): string {
-  let hash = 0;
-  for (let i = 0; i < nytId.length; i++) {
-    const char = nytId.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0;
-  }
-  return `nyt-${Math.abs(hash).toString(36)}`;
-}
-
 function transformArticle(raw: NytArticle): Article {
   return {
-    id: generateId(raw._id),
+    id: hashId(raw._id, 'nyt'),
     title: raw.headline?.main ?? '',
     description: raw.abstract || raw.snippet || raw.lead_paragraph || '',
     content: raw.lead_paragraph || null,
@@ -95,8 +92,6 @@ function transformArticle(raw: NytArticle): Article {
     provider: 'nyt',
   };
 }
-
-// ─── Provider ──────────────────────────────────────────────────────────────
 
 export class NytProvider implements NewsProvider {
   readonly id = 'nyt' as const;
@@ -183,30 +178,30 @@ export class NytProvider implements NewsProvider {
   }
 
   async getCategories(): Promise<Category[]> {
-    // NYT doesn't have a public categories endpoint; return common news desks
-    const desks = [
-      'Arts',
-      'Business',
-      'Climate',
-      'Education',
-      'Fashion',
-      'Food',
-      'Health',
-      'Magazine',
-      'Movies',
-      'National',
-      'Opinion',
-      'Politics',
-      'Science',
-      'Sports',
-      'Technology',
-      'Travel',
-      'World',
-    ];
-    return desks.map((d) => ({
-      id: d.toLowerCase(),
-      name: d,
-      provider: 'nyt' as const,
-    }));
+    // Fetch sections from the Times Newswire section-list endpoint
+    try {
+      const url = `https://api.nytimes.com/svc/news/v3/content/section-list.json?api-key=${this.apiKey}`;
+      const data = await apiGet<NytSectionListResponse>(url);
+      const sections = (data.results ?? [])
+        .filter((s) => s.display_name && s.section)
+        .map((s) => ({
+          id: s.section.toLowerCase(),
+          name: s.display_name,
+          provider: 'nyt' as const,
+        }));
+
+      return sections.length > 0 ? sections : this.fallbackCategories();
+    } catch {
+      return this.fallbackCategories();
+    }
+  }
+
+  private fallbackCategories(): Category[] {
+    return [
+      'Arts', 'Automobiles', 'Books', 'Business', 'Fashion', 'Food',
+      'Health', 'Magazine', 'Movies', 'National', 'Obituaries', 'Opinion',
+      'Politics', 'Real Estate', 'Science', 'Sports', 'Technology',
+      'Theater', 'Travel', 'World',
+    ].map((d) => ({ id: d.toLowerCase(), name: d, provider: 'nyt' as const }));
   }
 }

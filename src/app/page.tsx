@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useCallback } from 'react';
 import { useArticles } from '@/hooks/useArticles';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useSearchParamsState } from '@/hooks/useSearchParams';
@@ -13,7 +13,7 @@ import { SearchBar } from '@/components/filters/SearchBar';
 import { CategoryPills } from '@/components/filters/CategoryPills';
 import { ActiveFilters } from '@/components/filters/ActiveFilters';
 import { MobileFilterSheet } from '@/components/filters/MobileFilterSheet';
-import { Button, buttonStyles } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 import type { SearchParams } from '@/lib/types';
 import Link from 'next/link';
 
@@ -28,9 +28,12 @@ function HomeContent() {
 
   const { data, isLoading, isError, error, refetch } = useArticles(mergedParams);
 
-  const handleParamChange = (updates: Partial<SearchParams>) => {
-    setParams(updates);
-  };
+  const handleParamChange = useCallback(
+    (updates: Partial<SearchParams>) => {
+      setParams(updates);
+    },
+    [setParams],
+  );
 
   const hasActiveFilters = !!(
     params.q || params.from || params.to || params.category ||
@@ -43,7 +46,6 @@ function HomeContent() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      {/* Hero section with search */}
       <div className="pb-6 pt-8 sm:pb-8 sm:pt-12">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -56,7 +58,6 @@ function HomeContent() {
           </p>
         </div>
 
-        {/* Centered search bar */}
         <div className="mx-auto mt-6 max-w-xl">
           <SearchBar
             value={params.q ?? ''}
@@ -64,7 +65,6 @@ function HomeContent() {
           />
         </div>
 
-        {/* Category pills */}
         <div className="mt-5">
           <CategoryPills
             selected={params.category ?? ''}
@@ -73,14 +73,12 @@ function HomeContent() {
         </div>
       </div>
 
-      {/* Active filter pills */}
       {hasActiveFilters && (
         <div className="mb-6">
           <ActiveFilters params={params} onRemove={removeParam} onClearAll={clearAll} />
         </div>
       )}
 
-      {/* Fixed filter button */}
       <Button
         type="button"
         onClick={() => setFilterOpen(true)}
@@ -92,7 +90,6 @@ function HomeContent() {
         Filters
       </Button>
 
-      {/* Onboarding banner */}
       {!hasOnboarded && !hasPreferences && !isLoading && (
         <div className="mb-6 flex items-center gap-3 rounded-full border border-blue-100 bg-blue-50/80 py-2 pl-4 pr-2">
           <svg className="h-4 w-4 shrink-0 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -117,7 +114,6 @@ function HomeContent() {
         </div>
       )}
 
-      {/* Provider status banner */}
       {data?.meta.partial && (
         <div className="mb-6 flex items-center gap-3 rounded-full border border-amber-100 bg-amber-50/80 py-2 pl-4 pr-4">
           <svg className="h-4 w-4 shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -129,7 +125,6 @@ function HomeContent() {
         </div>
       )}
 
-      {/* Results count */}
       {data && !isLoading && (
         <div className="mb-4 flex items-center justify-between">
           <p className="text-sm text-gray-500">
@@ -139,28 +134,23 @@ function HomeContent() {
         </div>
       )}
 
-      {/* Content */}
       {isError ? (
         <ErrorDisplay message={error?.message} onRetry={() => refetch()} />
       ) : isLoading ? (
         <div>
-          {/* Hero skeleton */}
           <div className="mb-6 h-64 rounded-2xl skeleton-shimmer sm:h-80" />
-          {/* Grid skeleton */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }, (_, i) => <ArticleSkeleton key={i} />)}
           </div>
         </div>
       ) : articles.length > 0 ? (
         <div>
-          {/* Hero article */}
           {heroArticle && (
             <div className="mb-6">
               <HeroArticleCard article={heroArticle} />
             </div>
           )}
 
-          {/* Article grid */}
           {gridArticles.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {gridArticles.map((article) => (
@@ -169,7 +159,6 @@ function HomeContent() {
             </div>
           )}
 
-          {/* Load more */}
           {data?.meta.hasMore && (
             <div className="mt-8 flex justify-center pb-8">
               <Button
@@ -190,7 +179,6 @@ function HomeContent() {
         />
       )}
 
-      {/* Mobile filter sheet */}
       <MobileFilterSheet
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
