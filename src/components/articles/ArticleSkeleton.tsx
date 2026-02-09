@@ -1,24 +1,27 @@
 export function ArticleSkeleton() {
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm">
       {/* Thumbnail placeholder */}
-      <div className="aspect-video w-full animate-pulse bg-gray-200" />
+      <div className="skeleton-shimmer aspect-[16/10] w-full" />
 
       {/* Content placeholder */}
       <div className="flex flex-1 flex-col p-4">
         {/* Badge + date */}
         <div className="mb-2 flex items-center gap-2">
-          <div className="h-4 w-14 animate-pulse rounded-full bg-gray-200" />
-          <div className="ml-auto h-3 w-12 animate-pulse rounded bg-gray-200" />
+          <div className="skeleton-shimmer h-4 w-14 rounded-full" />
+          <div className="skeleton-shimmer ml-auto h-3 w-12 rounded" />
         </div>
         {/* Title lines */}
-        <div className="mb-1 h-4 w-full animate-pulse rounded bg-gray-200" />
-        <div className="mb-3 h-4 w-3/4 animate-pulse rounded bg-gray-200" />
+        <div className="skeleton-shimmer mb-1.5 h-4 w-full rounded" />
+        <div className="skeleton-shimmer mb-3 h-4 w-3/4 rounded" />
         {/* Description */}
-        <div className="mb-1 h-3 w-full animate-pulse rounded bg-gray-100" />
-        <div className="mb-3 h-3 w-5/6 animate-pulse rounded bg-gray-100" />
+        <div className="skeleton-shimmer mb-1 h-3.5 w-full rounded" />
+        <div className="skeleton-shimmer mb-3 h-3.5 w-5/6 rounded" />
         {/* Author */}
-        <div className="mt-auto h-3 w-24 animate-pulse rounded bg-gray-100" />
+        <div className="mt-auto flex items-center gap-1.5">
+          <div className="skeleton-shimmer h-5 w-5 rounded-full" />
+          <div className="skeleton-shimmer h-3 w-20 rounded" />
+        </div>
       </div>
     </div>
   );

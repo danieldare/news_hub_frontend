@@ -8,22 +8,24 @@ export function EmptyState({
   description = 'Try adjusting your search or filter criteria.',
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <svg
-        className="mb-4 h-16 w-16 text-gray-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-50">
+        <svg
+          className="h-10 w-10 text-gray-300"
+          fill="none"
+          viewBox="0 0 24 24"
           strokeWidth={1}
-          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-        />
-      </svg>
-      <h3 className="mb-1 text-lg font-medium text-gray-900">{message}</h3>
-      <p className="text-sm text-gray-500">{description}</p>
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6V7.5z"
+          />
+        </svg>
+      </div>
+      <h3 className="mb-1.5 text-base font-semibold text-gray-900">{message}</h3>
+      <p className="max-w-xs text-sm leading-relaxed text-gray-500">{description}</p>
     </div>
   );
 }

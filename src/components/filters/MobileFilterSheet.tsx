@@ -33,39 +33,45 @@ export function MobileFilterSheet({
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/30" onClick={onClose} aria-hidden="true" />
+      <div
+        className="animate-fade-in fixed inset-0 bg-black/40 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
       {/* Bottom sheet */}
-      <div className="fixed inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Filters</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100"
-            aria-label="Close filters"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+      <div className="animate-slide-up fixed inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl">
+        {/* Drag handle */}
+        <div className="sticky top-0 z-10 flex justify-center bg-white pb-2 pt-3">
+          <div className="h-1 w-8 rounded-full bg-gray-300" />
         </div>
 
-        <FilterPanel params={params} onParamChange={onParamChange} />
+        <div className="px-6 pb-6">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              aria-label="Close filters"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-          >
-            Apply Filters
-          </button>
+          <FilterPanel params={params} onParamChange={onParamChange} />
+
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
+            >
+              Apply Filters
+            </button>
+          </div>
         </div>
       </div>
     </div>

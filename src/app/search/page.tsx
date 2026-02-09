@@ -23,52 +23,54 @@ function SearchContent() {
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl">
       {/* Desktop sidebar filters */}
-      <aside className="hidden w-72 shrink-0 border-r border-gray-200 p-4 lg:block">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Filters</h2>
+      <aside className="hidden w-72 shrink-0 overflow-y-auto border-r border-gray-200/80 p-5 lg:block">
+        <h2 className="mb-5 text-base font-semibold text-gray-900">Filters</h2>
         <FilterPanel params={params} onParamChange={handleParamChange} />
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-4 sm:p-6">
-        {/* Mobile filter button */}
-        <div className="mb-4 flex items-center justify-between lg:hidden">
-          <h1 className="text-xl font-bold text-gray-900">Search</h1>
+      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+              Search
+            </h1>
+            {data && !isLoading && (
+              <p className="mt-1 text-sm text-gray-500">
+                {data.meta.total} {data.meta.total === 1 ? 'result' : 'results'} found
+              </p>
+            )}
+          </div>
+
+          {/* Mobile filter button */}
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md lg:hidden"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-              />
+            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
             </svg>
             Filters
           </button>
         </div>
 
-        {/* Desktop title */}
-        <h1 className="mb-4 hidden text-xl font-bold text-gray-900 lg:block">
-          Search Results
-        </h1>
-
         {/* Active filter pills */}
-        <div className="mb-4">
-          <ActiveFilters
-            params={params}
-            onRemove={removeParam}
-            onClearAll={clearAll}
-          />
+        <div className="mb-5">
+          <ActiveFilters params={params} onRemove={removeParam} onClearAll={clearAll} />
         </div>
 
-        {/* Results count */}
-        {data && !isLoading && (
-          <p className="mb-4 text-sm text-gray-500">
-            {data.meta.total} {data.meta.total === 1 ? 'result' : 'results'} found
-          </p>
+        {/* Provider status */}
+        {data?.meta.partial && (
+          <div className="mb-5 flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3.5">
+            <svg className="h-5 w-5 shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <p className="text-sm text-amber-800">
+              Some news sources are temporarily unavailable. Showing partial results.
+            </p>
+          </div>
         )}
 
         {/* Results */}
@@ -78,24 +80,17 @@ function SearchContent() {
           <ArticleGrid articles={[]} isLoading />
         ) : data && data.data.length > 0 ? (
           <>
-            {data.meta.partial && (
-              <div className="mb-4 rounded-md bg-yellow-50 p-3 text-sm text-yellow-800">
-                Some news sources are temporarily unavailable. Showing partial results.
-              </div>
-            )}
             <ArticleGrid articles={data.data} />
 
             {/* Pagination */}
             {data.meta.hasMore && (
-              <div className="mt-6 flex justify-center">
+              <div className="mt-8 flex justify-center">
                 <button
                   type="button"
-                  onClick={() =>
-                    setParams({ page: (params.page ?? 1) + 1 })
-                  }
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                  onClick={() => setParams({ page: (params.page ?? 1) + 1 })}
+                  className="rounded-lg border border-gray-200 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md active:scale-[0.98]"
                 >
-                  Load more
+                  Load more articles
                 </button>
               </div>
             )}
