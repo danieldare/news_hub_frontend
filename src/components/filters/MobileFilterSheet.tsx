@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import type { SearchParams } from '@/lib/types';
 import { FilterPanel } from './FilterPanel';
+import { Button } from '@/components/ui/Button';
 
 interface MobileFilterSheetProps {
   open: boolean;
@@ -31,7 +32,7 @@ export function MobileFilterSheet({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 lg:hidden">
+    <div className="fixed inset-0 z-50">
       {/* Backdrop */}
       <div
         className="animate-fade-in fixed inset-0 bg-black/40 backdrop-blur-sm"
@@ -40,13 +41,14 @@ export function MobileFilterSheet({
       />
 
       {/* Bottom sheet */}
-      <div className="animate-slide-up fixed inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl">
+      <div className="animate-slide-up fixed bottom-0 left-1/2 flex max-h-[85vh] w-full max-w-xl -translate-x-1/2 flex-col rounded-2xl bg-white shadow-2xl">
         {/* Drag handle */}
-        <div className="sticky top-0 z-10 flex justify-center bg-white pb-2 pt-3">
+        <div className="flex shrink-0 justify-center bg-white pb-2 pt-3">
           <div className="h-1 w-8 rounded-full bg-gray-300" />
         </div>
 
-        <div className="px-6 pb-6">
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
             <button
@@ -62,16 +64,13 @@ export function MobileFilterSheet({
           </div>
 
           <FilterPanel params={params} onParamChange={onParamChange} />
+        </div>
 
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
-            >
-              Apply Filters
-            </button>
-          </div>
+        {/* Fixed bottom button */}
+        <div className="shrink-0 border-t border-gray-100 bg-white px-6 py-4">
+          <Button type="button" onClick={onClose} size="lg" fullWidth>
+            Apply Filters
+          </Button>
         </div>
       </div>
     </div>
