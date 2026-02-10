@@ -2,6 +2,8 @@
 
 A news aggregator that pulls articles from NewsAPI, The Guardian, and the New York Times into a single feed with search, filtering, and personalization.
 
+**Live demo:** https://news-hub-frontend-self.vercel.app/
+
 Built with **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS 4**, and **Docker**.
 
 ## How It Works
@@ -111,9 +113,3 @@ src/
   "errors": []
 }
 ```
-
-## Given More Time
-
-- Cursor-based pagination across providers
-- E2E tests with Playwright
-- SSE or WebSocket for live breaking news

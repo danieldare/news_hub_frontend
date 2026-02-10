@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import type { SearchParams } from '@/lib/types';
 import { FilterPanel } from './FilterPanel';
 import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/icons';
 
 interface MobileFilterSheetProps {
   open: boolean;
@@ -72,9 +73,7 @@ export function MobileFilterSheet({
               className="rounded-lg p-2.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               aria-label="Close filters"
             >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <CloseIcon className="h-5 w-5" strokeWidth={1.5} />
             </button>
           </div>
 

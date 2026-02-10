@@ -66,7 +66,6 @@ describe('ArticleCard', () => {
 
   it('renders placeholder when no image', () => {
     const { container } = render(<ArticleCard article={makeArticle({ imageUrl: null })} />);
-    // Should have a gradient placeholder div instead of img
     expect(container.querySelector('img')).toBeNull();
   });
 });
