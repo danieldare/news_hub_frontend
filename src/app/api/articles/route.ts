@@ -23,9 +23,6 @@ function parseSearchParams(url: URL): SearchParams {
   }
 
   // Personalization params
-  if (sp.get('preferredSources')) {
-    params.preferredSources = sp.get('preferredSources')!.split(',');
-  }
   if (sp.get('preferredCategories')) {
     params.preferredCategories = sp.get('preferredCategories')!.split(',');
   }

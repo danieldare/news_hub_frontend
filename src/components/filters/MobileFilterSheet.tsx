@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { SearchParams } from '@/lib/types';
 import { FilterPanel } from './FilterPanel';
 import { Button } from '@/components/ui/Button';
@@ -10,16 +10,24 @@ interface MobileFilterSheetProps {
   open: boolean;
   onClose: () => void;
   params: SearchParams;
-  onParamChange: (updates: Partial<SearchParams>) => void;
+  onApply: (updates: Partial<SearchParams>) => void;
 }
 
 export function MobileFilterSheet({
   open,
   onClose,
   params,
-  onParamChange,
+  onApply,
 }: MobileFilterSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
+  const [draft, setDraft] = useState<SearchParams>({ ...params });
+
+  // Sync draft with parent params when the sheet opens
+  useEffect(() => {
+    if (open) {
+      setDraft({ ...params });
+    }
+  }, [open, params]);
 
   useEffect(() => {
     if (open) {
@@ -41,6 +49,15 @@ export function MobileFilterSheet({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
+
+  const handleDraftChange = (updates: Partial<SearchParams>) => {
+    setDraft((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleApply = () => {
+    onApply(draft);
+    onClose();
+  };
 
   if (!open) return null;
 
@@ -77,11 +94,11 @@ export function MobileFilterSheet({
             </button>
           </div>
 
-          <FilterPanel params={params} onParamChange={onParamChange} />
+          <FilterPanel params={draft} onParamChange={handleDraftChange} />
         </div>
 
         <div className="shrink-0 border-t border-gray-100 bg-white px-6 py-4">
-          <Button type="button" onClick={onClose} size="lg" fullWidth>
+          <Button type="button" onClick={handleApply} size="lg" fullWidth>
             Apply Filters
           </Button>
         </div>

@@ -45,7 +45,6 @@ export interface SearchParams {
   page?: number;
   pageSize?: number;
   providers?: ProviderID[];
-  preferredSources?: string[];
   preferredCategories?: string[];
   preferredAuthors?: string[];
 }
@@ -88,7 +87,6 @@ export interface NewsProvider {
 }
 
 export interface UserPreferences {
-  preferredSources: string[];
   preferredCategories: string[];
   preferredAuthors: string[];
   enabledProviders: ProviderID[];

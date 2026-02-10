@@ -15,8 +15,6 @@ async function fetchArticles(params: SearchParams): Promise<PaginatedResult<Arti
   if (params.page) searchParams.set('page', String(params.page));
   if (params.pageSize) searchParams.set('pageSize', String(params.pageSize));
   if (params.providers?.length) searchParams.set('providers', params.providers.join(','));
-  if (params.preferredSources?.length)
-    searchParams.set('preferredSources', params.preferredSources.join(','));
   if (params.preferredCategories?.length)
     searchParams.set('preferredCategories', params.preferredCategories.join(','));
   if (params.preferredAuthors?.length)

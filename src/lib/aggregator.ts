@@ -14,14 +14,12 @@ function computeRankScore(
   params: SearchParams,
 ): number {
   const hasPrefs =
-    (params.preferredSources?.length ?? 0) > 0 ||
     (params.preferredCategories?.length ?? 0) > 0 ||
     (params.preferredAuthors?.length ?? 0) > 0;
 
   if (!hasPrefs) return 0;
 
   let score = 0;
-  if (params.preferredSources?.includes(article.source.id)) score += 30;
   if (article.category && params.preferredCategories?.includes(article.category)) score += 20;
   if (article.author && params.preferredAuthors?.includes(article.author)) score += 15;
 

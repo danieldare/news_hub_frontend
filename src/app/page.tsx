@@ -38,7 +38,7 @@ function HomeContent() {
 
   const hasActiveFilters = !!(
     params.q || params.from || params.to || params.category ||
-    params.source || params.author || params.providers?.length
+    params.source || params.author
   );
 
   const articles = data?.pages?.flatMap((page) => page.data) ?? [];
@@ -185,7 +185,7 @@ function HomeContent() {
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
         params={params}
-        onParamChange={handleParamChange}
+        onApply={handleParamChange}
       />
     </div>
   );
