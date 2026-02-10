@@ -2,6 +2,7 @@
 
 import type { SearchParams } from '@/lib/types';
 import { PROVIDER_LABELS } from '@/utils/constants';
+import { CloseIcon } from '@/components/icons';
 
 interface ActiveFiltersProps {
   params: SearchParams;
@@ -32,30 +33,23 @@ export function ActiveFilters({ params, onRemove, onClearAll }: ActiveFiltersPro
       {pills.map((pill) => (
         <span
           key={pill.key}
-          className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+          className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50/80 px-3 py-1 text-xs font-medium text-blue-700 shadow-sm"
         >
           {pill.label}
           <button
             type="button"
             onClick={() => onRemove(pill.key)}
-            className="-mr-1 ml-0.5 rounded-full p-1 text-blue-400 transition-colors hover:bg-blue-100 hover:text-blue-600 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600"
+            className="-mr-1 rounded-full p-0.5 text-blue-400 transition-colors hover:bg-blue-200 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600"
             aria-label={`Remove ${pill.label} filter`}
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon className="h-3 w-3" strokeWidth={2.5} />
           </button>
         </span>
       ))}
       <button
         type="button"
         onClick={onClearAll}
-        className="text-xs font-medium text-red-600 hover:text-red-700"
+        className="rounded-full px-2.5 py-1 text-xs font-medium text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
       >
         Clear all
       </button>

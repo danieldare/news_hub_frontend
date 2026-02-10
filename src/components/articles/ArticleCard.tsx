@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { Article } from '@/lib/types';
 import { relativeTime } from '@/utils/dates';
 import { PROVIDER_COLORS, PROVIDER_LABELS } from '@/utils/constants';
+import { DocumentIcon } from '@/components/icons';
 
 interface ArticleCardProps {
   article: Article;
@@ -35,9 +36,7 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
           </>
         ) : (
           <div className="flex h-full items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-            <svg className="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6V7.5z" />
-            </svg>
+            <DocumentIcon className="h-10 w-10 text-gray-300" strokeWidth={1} />
           </div>
         )}
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import { CloseIcon } from '@/components/icons';
 
 interface MobileNavProps {
   open: boolean;
@@ -53,9 +54,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             onClick={onClose}
             aria-label="Close menu"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <CloseIcon className="h-5 w-5" strokeWidth={1.5} />
           </button>
         </div>
         <nav className="flex flex-col gap-1 p-3">

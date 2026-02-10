@@ -6,6 +6,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { PROVIDER_LABELS } from '@/utils/constants';
 import { Button } from '@/components/ui/Button';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { CheckIcon } from '@/components/icons';
 import type { ProviderID } from '@/lib/types';
 
 const ALL_PROVIDERS: { id: ProviderID; label: string; description: string }[] = [
@@ -49,9 +50,7 @@ export function PreferencesPanel() {
     <div className="space-y-8">
       {showSaved && (
         <div className="animate-fade-in flex items-center gap-3 rounded-full border border-green-100 bg-green-50/80 py-2 pl-4 pr-4">
-          <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
+          <CheckIcon className="h-4 w-4 shrink-0 text-green-500" />
           <p className="flex-1 text-sm text-green-700">Preferences saved automatically</p>
         </div>
       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import type { Article, PaginatedResult, SearchParams } from '@/lib/types';
 
 async function fetchArticles(params: SearchParams): Promise<PaginatedResult<Article>> {
@@ -40,8 +40,15 @@ async function fetchArticles(params: SearchParams): Promise<PaginatedResult<Arti
 }
 
 export function useArticles(params: SearchParams = {}) {
-  return useQuery({
-    queryKey: ['articles', params],
-    queryFn: () => fetchArticles(params),
+  const { page: _page, ...filterParams } = params;
+
+  return useInfiniteQuery({
+    queryKey: ['articles', filterParams],
+    queryFn: ({ pageParam }) => fetchArticles({ ...filterParams, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.meta.hasMore) return undefined;
+      return lastPage.meta.page + 1;
+    },
   });
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import type { ProviderID } from '@/lib/types';
+import { CloseIcon } from '@/components/icons';
 
 interface AuthorFilterProps {
   value: string;
@@ -35,14 +36,7 @@ export function AuthorFilter({ value, onChange, activeProviders }: AuthorFilterP
             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             aria-label="Clear author"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon className="h-3.5 w-3.5" />
           </button>
         )}
       </div>
