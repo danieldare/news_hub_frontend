@@ -1,7 +1,6 @@
 'use client';
 
 import type { SearchParams } from '@/lib/types';
-import { PROVIDER_LABELS } from '@/utils/constants';
 import { CloseIcon } from '@/components/icons';
 
 interface ActiveFiltersProps {
@@ -18,12 +17,6 @@ export function ActiveFilters({ params, onRemove, onClearAll }: ActiveFiltersPro
   if (params.to) pills.push({ key: 'to', label: `To: ${params.to}` });
   if (params.category) pills.push({ key: 'category', label: params.category });
   if (params.author) pills.push({ key: 'author', label: `By: ${params.author}` });
-  if (params.providers?.length) {
-    pills.push({
-      key: 'providers',
-      label: params.providers.map((p) => PROVIDER_LABELS[p] ?? p).join(', '),
-    });
-  }
 
   if (pills.length === 0) return null;
 

@@ -12,9 +12,6 @@ export function usePreferences() {
     if (store.enabledProviders.length > 0 && store.enabledProviders.length < 3) {
       params.providers = store.enabledProviders;
     }
-    if (store.preferredSources.length > 0) {
-      params.preferredSources = store.preferredSources;
-    }
     if (store.preferredCategories.length > 0) {
       params.preferredCategories = store.preferredCategories;
     }
@@ -26,7 +23,6 @@ export function usePreferences() {
   };
 
   const hasPreferences =
-    store.preferredSources.length > 0 ||
     store.preferredCategories.length > 0 ||
     store.preferredAuthors.length > 0;
 

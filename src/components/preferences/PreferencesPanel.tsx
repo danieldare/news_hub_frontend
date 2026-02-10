@@ -19,7 +19,6 @@ const ALL_PROVIDERS: { id: ProviderID; label: string; description: string }[] = 
 export function PreferencesPanel() {
   const {
     enabledProviders,
-    preferredSources,
     preferredCategories,
     preferredAuthors,
     toggleProvider,
@@ -202,7 +201,7 @@ export function PreferencesPanel() {
         </div>
       </section>
 
-      {(preferredSources.length > 0 || preferredCategories.length > 0 || preferredAuthors.length > 0) && (
+      {(preferredCategories.length > 0 || preferredAuthors.length > 0) && (
         <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
           <h3 className="mb-2 text-sm font-semibold text-gray-900">Current Preferences</h3>
           <div className="space-y-1.5 text-xs text-gray-600">
