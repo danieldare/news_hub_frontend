@@ -1,10 +1,9 @@
 'use client';
 
-import type { SearchParams, ProviderID } from '@/lib/types';
+import type { SearchParams } from '@/lib/types';
 import { SearchBar } from './SearchBar';
 import { DateRangeFilter } from './DateRangeFilter';
 import { CategoryFilter } from './CategoryFilter';
-import { SourceFilter } from './SourceFilter';
 import { AuthorFilter } from './AuthorFilter';
 
 interface FilterPanelProps {
@@ -33,17 +32,9 @@ export function FilterPanel({ params, onParamChange }: FilterPanelProps) {
         onChange={(category) => onParamChange({ category: category || undefined })}
       />
 
-      <SourceFilter
-        selectedProviders={params.providers ?? []}
-        onChange={(providers) =>
-          onParamChange({ providers: providers.length > 0 ? providers : undefined })
-        }
-      />
-
       <AuthorFilter
         value={params.author ?? ''}
         onChange={(author) => onParamChange({ author: author || undefined })}
-        activeProviders={(params.providers ?? []) as ProviderID[]}
       />
     </div>
   );

@@ -1,23 +1,13 @@
 'use client';
 
-import type { ProviderID } from '@/lib/types';
 import { CloseIcon } from '@/components/icons';
 
 interface AuthorFilterProps {
   value: string;
   onChange: (author: string) => void;
-  activeProviders: ProviderID[];
 }
 
-export function AuthorFilter({ value, onChange, activeProviders }: AuthorFilterProps) {
-  // Only show when Guardian or NYT is active (they support author data)
-  const hasAuthorSupport =
-    activeProviders.length === 0 ||
-    activeProviders.includes('guardian') ||
-    activeProviders.includes('nyt');
-
-  if (!hasAuthorSupport) return null;
-
+export function AuthorFilter({ value, onChange }: AuthorFilterProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-medium text-gray-900">Author</h3>

@@ -121,14 +121,14 @@ describe('ArticleAggregator', () => {
   it('ranks preferred content higher', async () => {
     const providers = [
       makeProvider('newsapi', [
-        makeArticle({ id: 'normal', url: 'https://a.com/1', source: { id: 'cnn', name: 'CNN', provider: 'newsapi' }, publishedAt: new Date('2025-01-15') }),
-        makeArticle({ id: 'preferred', url: 'https://a.com/2', source: { id: 'bbc', name: 'BBC', provider: 'newsapi' }, publishedAt: new Date('2025-01-14') }),
+        makeArticle({ id: 'normal', url: 'https://a.com/1', category: 'sports', publishedAt: new Date('2025-01-15') }),
+        makeArticle({ id: 'preferred', url: 'https://a.com/2', category: 'tech', publishedAt: new Date('2025-01-14') }),
       ]),
     ];
 
     const aggregator = new ArticleAggregator(providers);
     const result = await aggregator.search({
-      preferredSources: ['bbc'],
+      preferredCategories: ['tech'],
     });
 
     expect(result.data[0].id).toBe('preferred');

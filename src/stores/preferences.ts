@@ -4,12 +4,10 @@ import type { ProviderID, UserPreferences } from '@/lib/types';
 
 interface PreferencesState extends UserPreferences {
   hasOnboarded: boolean;
-  setPreferredSources: (sources: string[]) => void;
   setPreferredCategories: (categories: string[]) => void;
   setPreferredAuthors: (authors: string[]) => void;
   setEnabledProviders: (providers: ProviderID[]) => void;
   toggleProvider: (provider: ProviderID) => void;
-  toggleSource: (source: string) => void;
   toggleCategory: (category: string) => void;
   addAuthor: (author: string) => void;
   removeAuthor: (author: string) => void;
@@ -18,7 +16,6 @@ interface PreferencesState extends UserPreferences {
 }
 
 const DEFAULT_PREFERENCES: UserPreferences & { hasOnboarded: boolean } = {
-  preferredSources: [],
   preferredCategories: [],
   preferredAuthors: [],
   enabledProviders: ['newsapi', 'guardian', 'nyt'],
@@ -29,8 +26,6 @@ export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
       ...DEFAULT_PREFERENCES,
-
-      setPreferredSources: (sources) => set({ preferredSources: sources }),
 
       setPreferredCategories: (categories) => set({ preferredCategories: categories }),
 
@@ -47,15 +42,6 @@ export const usePreferencesStore = create<PreferencesState>()(
             return { enabledProviders: current.filter((p) => p !== provider) };
           }
           return { enabledProviders: [...current, provider] };
-        }),
-
-      toggleSource: (source) =>
-        set((state) => {
-          const current = state.preferredSources;
-          if (current.includes(source)) {
-            return { preferredSources: current.filter((s) => s !== source) };
-          }
-          return { preferredSources: [...current, source] };
         }),
 
       toggleCategory: (category) =>
