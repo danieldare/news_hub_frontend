@@ -46,20 +46,12 @@ function sortArticles(articles: Article[], params: SearchParams): Article[] {
   });
 }
 
-// Short-lived cache so article detail pages can look up recently fetched articles
+// In-memory cache so article detail pages can look up recently fetched articles
 const articleCache = new Map<string, Article>();
-const CACHE_TTL = 10 * 60 * 1000;
 
 function cacheArticles(articles: Article[]) {
   for (const article of articles) {
     articleCache.set(article.id, article);
-  }
-  // Evict stale entries periodically
-  if (articleCache.size > 500) {
-    const cutoff = Date.now() - CACHE_TTL;
-    for (const [id, a] of articleCache) {
-      if (a.publishedAt.getTime() < cutoff) articleCache.delete(id);
-    }
   }
 }
 
