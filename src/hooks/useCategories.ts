@@ -12,11 +12,11 @@ async function fetchCategories(): Promise<Category[]> {
 }
 
 export function useCategories() {
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
     staleTime: 10 * 60 * 1000,
   });
 
-  return deduplicateCategories(categories);
+  return { categories: deduplicateCategories(categories), isLoading };
 }

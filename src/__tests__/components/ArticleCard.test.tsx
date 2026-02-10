@@ -21,50 +21,48 @@ function makeArticle(overrides: Partial<Article> = {}): Article {
 }
 
 describe('ArticleCard', () => {
-  it('renders article title', () => {
+  it('shows the article headline', () => {
     render(<ArticleCard article={makeArticle()} />);
     expect(screen.getByText('Test Headline')).toBeInTheDocument();
   });
 
-  it('renders article description', () => {
+  it('shows the article summary', () => {
     render(<ArticleCard article={makeArticle()} />);
     expect(screen.getByText('This is a test description')).toBeInTheDocument();
   });
 
-  it('renders author name', () => {
+  it('shows the author name', () => {
     render(<ArticleCard article={makeArticle()} />);
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();
   });
 
-  it('renders provider badge', () => {
+  it('shows the news provider label', () => {
     render(<ArticleCard article={makeArticle()} />);
     expect(screen.getByText('NewsAPI')).toBeInTheDocument();
   });
 
-  it('renders source name when different from provider', () => {
+  it('shows the source name when it differs from the provider', () => {
     render(<ArticleCard article={makeArticle()} />);
     expect(screen.getByText('BBC News')).toBeInTheDocument();
   });
 
-  it('renders category when present', () => {
+  it('shows the article category', () => {
     render(<ArticleCard article={makeArticle({ category: 'Science' })} />);
     expect(screen.getByText('Science')).toBeInTheDocument();
   });
 
-  it('links to original article URL', () => {
+  it('navigates to the article detail page when clicked', () => {
     render(<ArticleCard article={makeArticle()} />);
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', 'https://bbc.com/news/1');
-    expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(link).toHaveAttribute('href', '/article/test-1');
   });
 
-  it('does not render author when null', () => {
+  it('hides the author when none is provided', () => {
     render(<ArticleCard article={makeArticle({ author: null })} />);
     expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument();
   });
 
-  it('renders placeholder when no image', () => {
+  it('shows a placeholder when the article has no image', () => {
     render(<ArticleCard article={makeArticle({ imageUrl: null })} />);
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });

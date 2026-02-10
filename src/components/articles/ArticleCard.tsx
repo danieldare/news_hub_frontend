@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { Article } from '@/lib/types';
 import { relativeTime } from '@/utils/dates';
 import { PROVIDER_COLORS, PROVIDER_LABELS } from '@/utils/constants';
@@ -16,10 +17,8 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
   const providerLabel = PROVIDER_LABELS[article.provider] ?? article.provider;
 
   return (
-    <a
-      href={article.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href={`/article/${article.id}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
@@ -82,6 +81,6 @@ export const ArticleCard = memo(function ArticleCard({ article }: ArticleCardPro
           </div>
         )}
       </div>
-    </a>
+    </Link>
   );
 });

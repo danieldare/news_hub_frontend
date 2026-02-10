@@ -7,6 +7,7 @@ import { PROVIDER_LABELS } from '@/utils/constants';
 import { Button } from '@/components/ui/Button';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { CheckIcon } from '@/components/icons';
+import { BatchReveal } from '@/components/ui/BatchReveal';
 import type { ProviderID } from '@/lib/types';
 
 const ALL_PROVIDERS: { id: ProviderID; label: string; description: string }[] = [
@@ -30,7 +31,7 @@ export function PreferencesPanel() {
 
   const [authorInput, setAuthorInput] = useState('');
   const [showSaved, setShowSaved] = useState(false);
-  const uniqueCategories = useCategories();
+  const { categories: uniqueCategories, isLoading: categoriesLoading } = useCategories();
 
   const handleAddAuthor = () => {
     const trimmed = authorInput.trim();
@@ -48,12 +49,18 @@ export function PreferencesPanel() {
 
   return (
     <div className="space-y-8">
-      {showSaved && (
-        <div className="animate-fade-in flex items-center gap-3 rounded-full border border-green-100 bg-green-50/80 py-2 pl-4 pr-4">
+      <div
+        className={`fixed left-1/2 z-50 -translate-x-1/2 transition-all duration-300 ease-in-out ${
+          showSaved
+            ? 'top-4 opacity-100'
+            : '-top-16 opacity-0'
+        }`}
+      >
+        <div className="flex items-center gap-2 rounded-full border border-green-200 bg-white px-4 py-2 shadow-lg">
           <CheckIcon className="h-4 w-4 shrink-0 text-green-500" />
-          <p className="flex-1 text-sm text-green-700">Preferences saved automatically</p>
+          <p className="text-sm font-medium text-green-700">Preferences saved</p>
         </div>
-      )}
+      </div>
 
       <section>
         <h3 className="mb-1 text-sm font-semibold text-gray-900">News Providers</h3>
@@ -104,11 +111,19 @@ export function PreferencesPanel() {
       </section>
 
       <section>
-        <h3 className="mb-1 text-sm font-semibold text-gray-900">Preferred Categories</h3>
-        <p className="mb-4 text-xs text-gray-500">Articles from these categories will be ranked higher.</p>
-        {uniqueCategories.length > 0 ? (
+        <h3 className="mb-1 text-sm font-semibold text-gray-900">Boost Categories</h3>
+        <p className="mb-4 text-xs text-gray-500">Pick your favourite topics to see them first. Unlike the filter on the home page, this won&apos;t hide anything — it just bumps your picks to the top.</p>
+        {categoriesLoading ? (
           <div className="flex flex-wrap gap-2">
-            {uniqueCategories.map((category) => {
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-8 animate-pulse rounded-full bg-gray-100" style={{ width: `${55 + Math.random() * 35}px` }} />
+            ))}
+          </div>
+        ) : uniqueCategories.length > 0 ? (
+          <BatchReveal
+            items={uniqueCategories}
+            className="flex flex-wrap gap-2"
+            renderItem={(category) => {
               const isSelected = preferredCategories.includes(category.name);
               return (
                 <button
@@ -130,8 +145,8 @@ export function PreferencesPanel() {
                   )}
                 </button>
               );
-            })}
-          </div>
+            }}
+          />
         ) : (
           <p className="text-xs text-gray-400">
             Categories will appear once API keys are configured.
