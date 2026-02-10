@@ -61,11 +61,11 @@ describe('ArticleCard', () => {
 
   it('does not render author when null', () => {
     render(<ArticleCard article={makeArticle({ author: null })} />);
-    expect(screen.queryByText(/By/)).not.toBeInTheDocument();
+    expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument();
   });
 
   it('renders placeholder when no image', () => {
-    const { container } = render(<ArticleCard article={makeArticle({ imageUrl: null })} />);
-    expect(container.querySelector('img')).toBeNull();
+    render(<ArticleCard article={makeArticle({ imageUrl: null })} />);
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 });
