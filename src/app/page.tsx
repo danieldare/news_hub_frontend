@@ -68,9 +68,11 @@ function HomeContent() {
         </div>
 
         <div className="mt-5">
+          <p className="mb-2 text-xs font-medium text-gray-400">Filter by category</p>
           <CategoryPills
             selected={params.category ?? ''}
             onChange={(category) => handleParamChange({ category: category || undefined })}
+            onSeeMore={() => setFilterOpen(true)}
           />
         </div>
       </div>

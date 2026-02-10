@@ -1,6 +1,7 @@
 'use client';
 
 import { useCategories } from '@/hooks/useCategories';
+import { BatchReveal } from '@/components/ui/BatchReveal';
 
 interface CategoryFilterProps {
   selected: string;
@@ -8,15 +9,30 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
-  const uniqueCategories = useCategories();
+  const { categories: uniqueCategories, isLoading } = useCategories();
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <h3 className="text-sm font-medium text-gray-900">Filter by category</h3>
+        <div className="flex flex-wrap gap-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-7 animate-pulse rounded-full bg-gray-100" style={{ width: `${55 + Math.random() * 35}px` }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (uniqueCategories.length === 0) return null;
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-medium text-gray-900">Category</h3>
-      <div className="flex flex-wrap gap-2">
-        {uniqueCategories.map((category) => {
+      <h3 className="text-sm font-medium text-gray-900">Filter by category</h3>
+      <BatchReveal
+        items={uniqueCategories}
+        className="flex flex-wrap gap-2"
+        renderItem={(category) => {
           const isSelected = selected.toLowerCase() === category.name.toLowerCase();
           return (
             <button
@@ -32,8 +48,8 @@ export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
               {category.name}
             </button>
           );
-        })}
-      </div>
+        }}
+      />
     </div>
   );
 }

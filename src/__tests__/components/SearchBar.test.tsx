@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SearchBar } from '@/components/filters/SearchBar';
 
 describe('SearchBar', () => {
@@ -9,10 +10,10 @@ describe('SearchBar', () => {
     expect(input).toHaveValue('initial');
   });
 
-  it('updates input on typing', () => {
+  it('updates input on typing', async () => {
     render(<SearchBar value="" onChange={() => {}} />);
     const input = screen.getByPlaceholderText('Search articles...');
-    fireEvent.change(input, { target: { value: 'test query' } });
+    await userEvent.type(input, 'test query');
     expect(input).toHaveValue('test query');
   });
 
@@ -26,19 +27,18 @@ describe('SearchBar', () => {
     expect(screen.queryByLabelText('Clear search')).not.toBeInTheDocument();
   });
 
-  it('clears input and calls onChange when clear is clicked', () => {
+  it('clears the search when the user clicks the clear button', async () => {
     const onChange = vi.fn();
     render(<SearchBar value="test" onChange={onChange} />);
-    fireEvent.click(screen.getByLabelText('Clear search'));
+    await userEvent.click(screen.getByLabelText('Clear search'));
     expect(onChange).toHaveBeenCalledWith('');
   });
 
-  it('calls onChange on form submit', () => {
+  it('searches when the user presses Enter', async () => {
     const onChange = vi.fn();
     render(<SearchBar value="" onChange={onChange} />);
     const input = screen.getByPlaceholderText('Search articles...');
-    fireEvent.change(input, { target: { value: 'query' } });
-    fireEvent.submit(input.closest('form')!);
+    await userEvent.type(input, 'query{Enter}');
     expect(onChange).toHaveBeenCalledWith('query');
   });
 });

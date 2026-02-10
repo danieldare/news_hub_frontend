@@ -46,6 +46,15 @@ function sortArticles(articles: Article[], params: SearchParams): Article[] {
   });
 }
 
+// In-memory cache so article detail pages can look up recently fetched articles
+const articleCache = new Map<string, Article>();
+
+function cacheArticles(articles: Article[]) {
+  for (const article of articles) {
+    articleCache.set(article.id, article);
+  }
+}
+
 export class ArticleAggregator {
   constructor(private readonly providers: NewsProvider[]) {}
 
@@ -96,6 +105,7 @@ export class ArticleAggregator {
     });
 
     const deduped = deduplicateArticles(allArticles);
+    cacheArticles(deduped);
     const sorted = sortArticles(deduped, params);
 
     const start = (page - 1) * pageSize;
@@ -129,6 +139,28 @@ export class ArticleAggregator {
       }
     }
     return categories;
+  }
+
+  async getArticleById(id: string): Promise<Article | null> {
+    const cached = articleCache.get(id);
+    if (cached) return cached;
+
+    // Cache miss — warm it with a quick search, then retry
+    const prefix = id.split('-')[0];
+    const provider = this.providers.find((p) => p.id === prefix);
+    const targets = provider ? [provider] : this.providers;
+
+    const results = await Promise.allSettled(
+      targets.map((p) => p.search({ page: 1, pageSize: 50 })),
+    );
+
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        cacheArticles(result.value.data);
+      }
+    }
+
+    return articleCache.get(id) ?? null;
   }
 
   getProviderMeta() {
