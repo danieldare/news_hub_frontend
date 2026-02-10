@@ -21,7 +21,7 @@ Search and filter state lives in URL params (`useSearchParams`), so every view i
 - **Tailwind CSS 4** — CSS-first config (`@theme inline`)
 - **TanStack Query v5** — client caching, dedup, retry
 - **Zustand 5** — preferences with `persist` middleware
-- **Vitest + React Testing Library + MSW** — unit and component tests
+- **Vitest + React Testing Library** — unit and component tests
 - **Docker** — multi-stage build with standalone output
 
 ## Getting Started
